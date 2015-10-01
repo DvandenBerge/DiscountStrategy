@@ -7,8 +7,6 @@ public class Product {
     private String productId;
     private String name;
     private double unitPrice;
-
-    
     private DiscountStrategy discount;
 
     public Product(String productId, String name, double price, DiscountStrategy discount) {
@@ -48,9 +46,4 @@ public class Product {
         return discount;
     }
     
-    public static void main(String[] args) {
-        Product item1 = new Product("A100","Baseball hat",20.00,new QtyDiscount(.10,2));
-        double amt=item1.getDiscountAmt(2);
-        System.out.println(amt);
-    }
 }
