@@ -47,4 +47,28 @@ public class FakeDatabase implements DatabaseStrategy{
         temp=null;
         products[products.length-1]=p;
     }
+    
+    public final Product lookupProduct(String productID){
+        Product product=null;
+        for(Product p:products){
+            if(p.getProductId().equals(productID)){
+                product = p;
+                break;
+            }
+        }
+        return product;
+    }
+        
+    public final Customer lookupCustomer(int customerID){
+        Customer c=null;
+        for(Customer cust:customers){
+            if(cust.getCustomerID()==customerID){
+                c=cust;
+                return c;
+            }
+        }
+        c=new Customer();
+        addCustomer(c);
+        return c;
+    }
 }

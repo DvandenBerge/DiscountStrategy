@@ -34,7 +34,11 @@ public class InvoiceFile implements OutputStrategy{
 
     @Override
     public int getCustomerID() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return customer.getCustomerID();
+    }
+    @Override
+    public void setCustomerID(int customerID){
+        this.customer=lookupCustomer(customerID);
     }
 
     @Override
@@ -61,15 +65,10 @@ public class InvoiceFile implements OutputStrategy{
     public String getLineItemInfo(){
         return lineItems[lineItems.length-1].toString();
     }
-    
-    @Override
-    public void setCustomerID(int customerID) {
-        this.customer=lookupCustomer(customerID);
-    }
 
     @Override
     public void setDatabase(DatabaseStrategy database) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        database=database;
     }
     
     private final Product lookupProduct(String productID){

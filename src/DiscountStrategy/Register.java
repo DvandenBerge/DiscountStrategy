@@ -9,7 +9,7 @@ public class Register {
     private OutputStrategy outputStrategy;
     
     public Register(DatabaseStrategy db) throws IOException{
-        this.outputStrategy=new InvoiceFile(db);
+        this.outputStrategy=new Receipt(db);
     }
     
     public void scanProductUPC(String productID,double qty){

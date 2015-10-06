@@ -39,7 +39,7 @@ public class Receipt implements OutputStrategy {
         if(productID.length()!=PRODUCT_ID_LENGTH){
             throw new IllegalArgumentException(INVALID_ITEM_ID_ERROR);
         }
-        LineItem l=new LineItem(lookupProduct(productID),qty);
+        LineItem l=new LineItem(database.lookupProduct(productID),qty);
         LineItem[] temp = new LineItem[scannedProducts.length+1];
         for(int i=0;i<scannedProducts.length;i++){
             temp[i]=scannedProducts[i];
@@ -55,7 +55,7 @@ public class Receipt implements OutputStrategy {
     }
     @Override
     public void setCustomerID(int customerID){
-        this.customer=lookupCustomer(customerID);
+        this.customer=database.lookupCustomer(customerID);
     }
     @Override
         public DatabaseStrategy getDatabase() {
@@ -71,31 +71,8 @@ public class Receipt implements OutputStrategy {
         this.database = database;
     }
     
-    private final Customer lookupCustomer(int customerID){
-        Customer c=null;
-        for(Customer cust:database.getCustomers()){
-            if(cust.getCustomerID()==customerID){
-                c=cust;
-                return c;
-            }
-        }
-        c=new Customer();
-        database.addCustomer(c);
-        return c;
-    }
-    
     private String getCustomerInfo(){
         return this.customer.getCustomerName()+" ID:"+this.customer.getCustomerID();
     }
     
-    private final Product lookupProduct(String productID){
-        Product product=null;
-        for(Product p:database.getProducts()){
-            if(p.getProductId().equals(productID)){
-                product = p;
-                break;
-            }
-        }
-        return product;
-    }
 }
