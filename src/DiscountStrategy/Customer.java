@@ -6,7 +6,7 @@ package DiscountStrategy;
 public class Customer {
     private static int customerCount=0;
     private String customerName;
-    private int customerID;
+    private final int customerID;
     
     public Customer(String customerName){
         this.customerName=customerName;
