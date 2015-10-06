@@ -10,11 +10,16 @@ public class LineItem {
     private Product product;
     private double qty;
     
-    public LineItem(String productID,double qty){
-        if(lookupProduct(productID)==null){
+    /**
+     *
+     * @param product a LineItem is only created if a valid product is passed into the constructor. This is checked in the receipt against the database
+     * @param qty a double value for the quantity purchased/scanned
+     */
+    public LineItem(Product product,double qty){
+        if(product==null){
             throw new IllegalArgumentException(NOT_A_PRODUCT_ERROR);
         }else{
-            this.product=lookupProduct(productID);
+            this.product=(product);
             this.qty=qty;
         }
     }
@@ -33,19 +38,34 @@ public class LineItem {
         this.qty = qty;
     }
     
-    public String displayLineItem(){     
-        return (product.getProductId()+" "+product.getName()+" $"+product.getPrice()+"x"+
-                qty+" $"+(product.getPrice()*qty)+" $"+product.getDiscountAmt(qty));
+    private double getMaxPrice(){
+        return product.getPrice()*qty;
+    }
+
+    /**
+     *
+     * @return the max price with the discount applied
+     */
+    public double getDiscountedLineItemPrice(){
+        return getMaxPrice()-product.getDiscountAmt(qty);
     }
     
-    public final Product lookupProduct(String productID){
-        Product product=null;
-        for(Product p:FakeDatabase.getProducts()){
-            if(p.getProductId().equals(productID)){
-                product = p;
-                break;
-            }
-        }
-        return product;
+    /**
+     *
+     * @return the amount to be discounted for that quantity
+     */
+    public double getLineItemDiscountAmt(){
+        return product.getDiscountAmt(qty);
+    }
+    
+    public String displayLineItemInfo(){     
+        return (product.getProductId()+" "+product.getName()+" $"+product.getPrice()+"x"+
+                qty+" $"+getMaxPrice()+" - $"+getLineItemDiscountAmt()+
+                " = $"+(getMaxPrice()-getLineItemDiscountAmt()));
+    }
+    
+    @Override
+    public String toString(){
+        return product.getProductId()+" "+product.getName()+" "+qty+" "+getMaxPrice();
     }
 }

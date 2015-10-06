@@ -3,33 +3,43 @@ package DiscountStrategy;
 /**
  * @author dvandenberge
  */
-public class Receipt {
+public class Receipt implements OutputStrategy {
     private final String INVALID_ITEM_ID_ERROR="That is not a valid item ID";
     private final int PRODUCT_ID_LENGTH=5;
     
     private LineItem[] scannedProducts;
     private Customer customer;
+    private DatabaseStrategy database;
     
-    public Receipt(int customerID){
+    public Receipt(DatabaseStrategy db){
         this.scannedProducts=new LineItem[0];
-        this.customer=lookupCustomer(customerID);
+        this.database=db;
     }
     
-    public String getReceiptLineItems(){
+    @Override
+    public String getOutputLineItems(){
         String formattedReceipt="Billed to "+getCustomerInfo()+"\n";
+        double totalPrice=0;
+        double totalAmtDiscounted=0;
         for(LineItem l:scannedProducts){
-            formattedReceipt+=l.displayLineItem()+"\n";
+            formattedReceipt+=l.displayLineItemInfo()+"\n";
+            totalPrice+=l.getDiscountedLineItemPrice();
+            totalAmtDiscounted+=l.getLineItemDiscountAmt();
         }
+        formattedReceipt+="Total Price: $"+totalPrice+"\n";
+        formattedReceipt+="Total Saved: $"+totalAmtDiscounted;
+        
         return formattedReceipt;
     }
     
+    @Override
     public void addLineItem(String productID,double qty){
         //Makes sure all products scanned have a valid productID length 
         //only accepts IDs with length of 5
         if(productID.length()!=PRODUCT_ID_LENGTH){
             throw new IllegalArgumentException(INVALID_ITEM_ID_ERROR);
         }
-        LineItem l=new LineItem(productID,qty);
+        LineItem l=new LineItem(lookupProduct(productID),qty);
         LineItem[] temp = new LineItem[scannedProducts.length+1];
         for(int i=0;i<scannedProducts.length;i++){
             temp[i]=scannedProducts[i];
@@ -39,27 +49,53 @@ public class Receipt {
         scannedProducts[scannedProducts.length-1]=l;
     }
     
-    private Customer lookupCustomer(int customerID){
+    @Override
+    public int getCustomerID(){
+        return customer.getCustomerID();
+    }
+    @Override
+    public void setCustomerID(int customerID){
+        this.customer=lookupCustomer(customerID);
+    }
+    @Override
+        public DatabaseStrategy getDatabase() {
+        return database;
+    }
+    
+    public String getLineItemInfo(){
+        return scannedProducts[scannedProducts.length-1].toString();
+    }
+
+    @Override
+    public void setDatabase(DatabaseStrategy database) {
+        this.database = database;
+    }
+    
+    private final Customer lookupCustomer(int customerID){
         Customer c=null;
-        for(Customer cust:FakeDatabase.getCustomers()){
+        for(Customer cust:database.getCustomers()){
             if(cust.getCustomerID()==customerID){
                 c=cust;
                 return c;
             }
         }
         c=new Customer();
-        FakeDatabase.addCustomer(c);
+        database.addCustomer(c);
         return c;
     }
     
     private String getCustomerInfo(){
         return this.customer.getCustomerName()+" ID:"+this.customer.getCustomerID();
     }
-
-    public static void main(String[] args) {
-        Receipt r1 = new Receipt(0);
-        r1.addLineItem("BJ111",3);
-        r1.addLineItem("BC100",1);
-        System.out.println(r1.getReceiptLineItems());
+    
+    private final Product lookupProduct(String productID){
+        Product product=null;
+        for(Product p:database.getProducts()){
+            if(p.getProductId().equals(productID)){
+                product = p;
+                break;
+            }
+        }
+        return product;
     }
 }
