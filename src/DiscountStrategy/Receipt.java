@@ -4,8 +4,6 @@ package DiscountStrategy;
  * @author dvandenberge
  */
 public class Receipt implements OutputStrategy {
-    private final String INVALID_ITEM_ID_ERROR="That is not a valid item ID";
-    private final int PRODUCT_ID_LENGTH=5;
     
     private LineItem[] scannedProducts;
     private Customer customer;
@@ -40,14 +38,13 @@ public class Receipt implements OutputStrategy {
         if(productID.length()!=PRODUCT_ID_LENGTH){
             throw new IllegalArgumentException(INVALID_ITEM_ID_ERROR);
         }
-        LineItem l=new LineItem(database.lookupProduct(productID),qty);
         LineItem[] temp = new LineItem[scannedProducts.length+1];
         for(int i=0;i<scannedProducts.length;i++){
             temp[i]=scannedProducts[i];
         }
         scannedProducts=temp;
         temp=null;
-        scannedProducts[scannedProducts.length-1]=l;
+        scannedProducts[scannedProducts.length-1]=new LineItem(database.lookupProduct(productID),qty);
     }
     
     @Override

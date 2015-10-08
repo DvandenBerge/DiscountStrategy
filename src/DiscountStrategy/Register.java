@@ -19,7 +19,7 @@ public class Register {
         outputStrategy.setCustomerID(customerID);
     }
     
-    public String printReceipt(){
+    public String finalizeTransaction(){
         return outputStrategy.getOutputLineItems();
     }
     

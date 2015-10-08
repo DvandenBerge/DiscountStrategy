@@ -4,7 +4,6 @@ package DiscountStrategy;
  * @author dvandenberge
  */
 public class LineItem {
-    
     private final String NOT_A_PRODUCT_ERROR="That is not a valid product, please re-scan";
     
     private Product product;
@@ -12,14 +11,14 @@ public class LineItem {
     
     /**
      *
-     * @param product a LineItem is only created if a valid product is passed into the constructor. This is checked in the receipt against the database
+     * @param product a LineItem is only created if a valid product is passed into the constructor. This ensures the OutputStartegy contains only valid LineItems
      * @param qty a double value for the quantity purchased/scanned
      */
     public LineItem(Product product,double qty){
         if(product==null){
             throw new IllegalArgumentException(NOT_A_PRODUCT_ERROR);
         }else{
-            this.product=(product);
+            this.product=product;
             this.qty=qty;
         }
     }
@@ -51,7 +50,7 @@ public class LineItem {
      * @return the max price with the discount applied
      */
     public double getDiscountedLineItemPrice(){
-        return getMaxPrice()-product.getDiscountAmt(qty);
+        return getMaxPrice()-getLineItemDiscountAmt();
     }
     
     /**

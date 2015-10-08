@@ -8,7 +8,7 @@ import java.io.PrintWriter;
  * @author dvandenberge
  */
 public class InvoiceFile implements OutputStrategy{
-
+    
     private LineItem[] lineItems;
     private Customer customer;
     private DatabaseStrategy database;
@@ -23,14 +23,16 @@ public class InvoiceFile implements OutputStrategy{
     
     @Override
     public void addLineItem(String productID, double qty) {
-        LineItem l=new LineItem(database.lookupProduct(productID),qty);
+        if(productID.length()!=PRODUCT_ID_LENGTH){
+            throw new IllegalArgumentException(INVALID_ITEM_ID_ERROR);
+        }
         LineItem[] temp=new LineItem[lineItems.length+1];
         for(int i=0;i<lineItems.length;i++){
             temp[i]=lineItems[i];
         }
         lineItems=temp;
         temp=null;
-        lineItems[lineItems.length-1]=l;
+        lineItems[lineItems.length-1]=new LineItem(database.lookupProduct(productID),qty);
     }
 
     @Override
@@ -52,9 +54,9 @@ public class InvoiceFile implements OutputStrategy{
             totalDiscounted+=l.getLineItemDiscountAmt();
         }
         writer.println("Total Price: $"+totalCost);
-        writer.println("Total Saved: $"+totalDiscounted);
+        writer.print("Total Saved: $"+totalDiscounted);
         writer.close();
-        return "Invoice made!";
+        return "Invoice created!!";
     }
 
     @Override

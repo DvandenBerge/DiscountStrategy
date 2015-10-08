@@ -27,7 +27,7 @@ public class FakeDatabase implements DatabaseStrategy{
     }
     
     @Override
-    public void addCustomer(Customer c){
+    public final void addCustomer(Customer c){
         Customer[] temp=new Customer[customers.length+1];
         for(int i=0;i<customers.length;i++){
             temp[i]=customers[i];
@@ -38,7 +38,7 @@ public class FakeDatabase implements DatabaseStrategy{
     }
     
     @Override
-    public void addProduct(Product p){
+    public final void addProduct(Product p){
         Product[] temp=new Product[products.length+1];
         for(int i=0;i<products.length;i++){
             temp[i]=products[i];
@@ -48,6 +48,7 @@ public class FakeDatabase implements DatabaseStrategy{
         products[products.length-1]=p;
     }
     
+    @Override
     public final Product lookupProduct(String productID){
         Product product=null;
         for(Product p:products){
@@ -59,6 +60,7 @@ public class FakeDatabase implements DatabaseStrategy{
         return product;
     }
         
+    @Override
     public final Customer lookupCustomer(int customerID){
         Customer c=null;
         for(Customer cust:customers){

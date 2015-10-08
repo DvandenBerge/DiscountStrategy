@@ -11,10 +11,10 @@ public class Driver {
         
         Register register1 = new Register();
         
-        register1.beginNewTransaction(2,new InvoiceFile());
+        register1.beginNewTransaction(2,new Receipt());
         register1.scanProductUPC("BC100", 4);
         register1.scanProductUPC("BJ111", 2);
         register1.scanProductUPC("BM210", 3);
-        System.out.println(register1.printReceipt());
+        System.out.println(register1.finalizeTransaction());
     }
 }
