@@ -71,4 +71,9 @@ public class FakeDatabase implements DatabaseStrategy{
         addCustomer(c);
         return c;
     }
+    
+    @Override
+    public String toString(){
+        return "This database is a fake, dummy database";
+    }
 }

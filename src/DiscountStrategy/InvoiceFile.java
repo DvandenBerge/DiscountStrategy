@@ -14,15 +14,16 @@ public class InvoiceFile implements OutputStrategy{
     private DatabaseStrategy database;
     private PrintWriter writer;
     
-    public InvoiceFile(DatabaseStrategy db) throws IOException{
+    public InvoiceFile() throws IOException{
+        DatabaseStrategy fakeDatabase = new FakeDatabase();
         this.lineItems=new LineItem[0];
-        this.database=db;
+        this.database=fakeDatabase;
         writer=new PrintWriter("C:\\invoice.txt","UTF-8");
     }
     
     @Override
     public void addLineItem(String productID, double qty) {
-        LineItem l=new LineItem(lookupProduct(productID),qty);
+        LineItem l=new LineItem(database.lookupProduct(productID),qty);
         LineItem[] temp=new LineItem[lineItems.length+1];
         for(int i=0;i<lineItems.length;i++){
             temp[i]=lineItems[i];
@@ -38,12 +39,7 @@ public class InvoiceFile implements OutputStrategy{
     }
     @Override
     public void setCustomerID(int customerID){
-        this.customer=lookupCustomer(customerID);
-    }
-
-    @Override
-    public DatabaseStrategy getDatabase() {
-        return database;
+        this.customer=database.lookupCustomer(customerID);
     }
 
     @Override
@@ -60,39 +56,10 @@ public class InvoiceFile implements OutputStrategy{
         writer.close();
         return "Invoice made!";
     }
-    
-    @Override
-    public String getLineItemInfo(){
-        return lineItems[lineItems.length-1].toString();
-    }
 
     @Override
     public void setDatabase(DatabaseStrategy database) {
-        database=database;
-    }
-    
-    private final Product lookupProduct(String productID){
-        Product product=null;
-        for(Product p:database.getProducts()){
-            if(p.getProductId().equals(productID)){
-                product = p;
-                break;
-            }
-        }
-        return product;
-    }
-    
-    private final Customer lookupCustomer(int customerID){
-        Customer c=null;
-        for(Customer cust:database.getCustomers()){
-            if(cust.getCustomerID()==customerID){
-                c=cust;
-                return c;
-            }
-        }
-        c=new Customer();
-        database.addCustomer(c);
-        return c;
+        this.database=database;
     }
     
 }

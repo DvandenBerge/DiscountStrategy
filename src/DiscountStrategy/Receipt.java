@@ -11,9 +11,10 @@ public class Receipt implements OutputStrategy {
     private Customer customer;
     private DatabaseStrategy database;
     
-    public Receipt(DatabaseStrategy db){
+    public Receipt(){
+        DatabaseStrategy fakeDatabase = new FakeDatabase();
         this.scannedProducts=new LineItem[0];
-        this.database=db;
+        this.database=fakeDatabase;
     }
     
     @Override
@@ -56,14 +57,6 @@ public class Receipt implements OutputStrategy {
     @Override
     public void setCustomerID(int customerID){
         this.customer=database.lookupCustomer(customerID);
-    }
-    @Override
-        public DatabaseStrategy getDatabase() {
-        return database;
-    }
-    
-    public String getLineItemInfo(){
-        return scannedProducts[scannedProducts.length-1].toString();
     }
 
     @Override

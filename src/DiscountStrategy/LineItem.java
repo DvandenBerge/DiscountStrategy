@@ -38,6 +38,10 @@ public class LineItem {
         this.qty = qty;
     }
     
+    /**
+     * 
+     * @return the maximum(not-discounted) price to be paid for a lineitem
+     */
     private double getMaxPrice(){
         return product.getPrice()*qty;
     }
